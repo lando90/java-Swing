@@ -1,5 +1,3 @@
-package ventanaEmpleados;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -48,8 +46,12 @@ public class ConexionBBDD{
 			objEmpl.setDepartamento(resultado.getString("departamento"));
 			objEmpl.setEmail(resultado.getString("email"));
 			objEmpl.setSalario(resultado.getFloat("salario"));
-			objEmpl.setFechaIni(resultado.getTimestamp("fechaIni"));
-			// objEmpl.setFechaFin()
+			if(resultado.getString("fechaIni")!=null){
+				objEmpl.setFechaIni(resultado.getTimestamp("fechaIni"));
+			}
+				
+
+//				objEmpl.setFechaFin(resultado.getTimestamp("fechaFin"));
 
 		}
 		st.close();
@@ -60,8 +62,8 @@ public class ConexionBBDD{
 	public  void insert(Empleado emp) throws SQLException{
 		Connection dt= getConexion();
 		st=conexion.createStatement();
-		String query = ("INSERT INTO table1 (nombre, apellido, email, departamento, salario, fechaIni) values(\"");
-		query += emp.getNombre()+"\",\""+emp.getApellido()+"\",\""+emp.getEmail()+"\",\""+emp.getDepartamento()+"\","+emp.getSalario()+",\"2001-11-11 00:00:00\")";
+		String query = ("INSERT INTO table1 (nombre, apellido, email, departamento, salario, fechaIni) VALUES(\"");
+		query += emp.getNombre()+"\",\""+emp.getApellido()+"\",\""+emp.getEmail()+"\",\""+emp.getDepartamento()+"\","+emp.getSalario()+",\""+emp.getFechaIni()+"\")";
 		st.execute(query);
 		st.close();
 		cierraConexion(dt);
@@ -70,7 +72,7 @@ public class ConexionBBDD{
 	public void delete(int idSelected)throws SQLException{
 		Connection dt= getConexion();
 		st=conexion.createStatement();
-		String query = ("delete from table1 WHERE id="+idSelected);
+		String query = ("DELETE FROM table1 WHERE id="+idSelected);
 		st.execute(query);
 		st.close();
 		cierraConexion(dt);
@@ -79,7 +81,7 @@ public class ConexionBBDD{
 	public void update(Empleado emp) throws SQLException {
 		Connection dt= getConexion();
 		st=conexion.createStatement();
-		String query = ("UPDATE table1 set nombre=\""+emp.getNombre()+"\", apellido=\""+emp.getApellido()+	"\", email=\""+emp.getEmail()+"\", departamento=\""+emp.getDepartamento()+"\", salario="+emp.getSalario()+", fechaIni=\"2001-11-11 00:00:00\" WHERE ID="+emp.getID());
+		String query = ("UPDATE table1 SET nombre=\""+emp.getNombre()+"\", apellido=\""+emp.getApellido()+	"\", email=\""+emp.getEmail()+"\", departamento=\""+emp.getDepartamento()+"\", salario="+emp.getSalario()+", fechaIni=\""+emp.getFechaIni()+"\", fechaFin = \"" +emp.getFechaFin() +"\" WHERE ID="+emp.getID());
 		st.execute(query);
 		st.close();
 		cierraConexion(dt);
