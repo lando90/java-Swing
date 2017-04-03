@@ -9,21 +9,16 @@ package ventanaEmpleados;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.table.*;
@@ -31,21 +26,15 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.*;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.JCheckBox;
 import javax.swing.JPasswordField;
 
-import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -74,12 +63,13 @@ public class EmpleadoController extends JPanel{
 	
 	
 public EmpleadoController() throws SQLException, ClassNotFoundException{
-		
+	frame = new JFrame("TablaEmpleados");
 		setLayout(new BorderLayout());
 		add(Menu(),BorderLayout.NORTH);
 		add(tabla(),BorderLayout.WEST);
-		add(panelEste(),BorderLayout.EAST);
-		
+		add(panelEste(),BorderLayout.CENTER);
+	
+		frame.setIconImage(new ImageIcon("/imagen.jpeg").getImage()); 
 		//Add the scroll pane to this panel.
 	
 	}
@@ -114,13 +104,17 @@ private Component Menu() {
 		return menuBar;
 	}
 	public JPanel panelEste(){
-		JPanel jpPrincipal = new JPanel(new GridLayout(3, 1));
+		JPanel jpPrincipal = new JPanel(new GridLayout(3, 2));
+		
 		jpPrincipal.add(panelEsteArriba(),BorderLayout.NORTH);
 		jpPrincipal.add(panelEsteAbajo(),BorderLayout.SOUTH);
-		jpPrincipal.setPreferredSize(new Dimension(200,200));
+		
+		jpPrincipal.setPreferredSize(new Dimension(0,20));
+		jpPrincipal.setBackground(Color.black);
 		return jpPrincipal;
 
 	}
+	@SuppressWarnings("unchecked")
 	public JPanel panelEsteArriba(){
 		String data[] = { "IT", "RRHH", "Seleccion" };
 		JPanel jpPrincipal = new JPanel(new GridBagLayout());
@@ -133,7 +127,7 @@ private Component Menu() {
 		list = new JComboBox(data); //data has type Object[]
 		list.setSelectedIndex(0);
 		JScrollPane listScroller = new JScrollPane(list);
-		listScroller.setPreferredSize(new Dimension(20, 1));
+		//listScroller.setPreferredSize(new Dimension(200, 1));
 		
 		email = new JLabel("Email");
 		email2 = new JTextField("");
@@ -159,7 +153,7 @@ private Component Menu() {
 		
 		depar.setMaximumSize(new Dimension(200,200));
 		depar.setAlignmentX(Component.LEFT_ALIGNMENT);
-		list.setMaximumSize(new Dimension(200,200));
+		list.setMaximumSize(new Dimension(20,20));
 		list.setAlignmentX(Component.LEFT_ALIGNMENT);
 		list.setEnabled(false);
 		
@@ -203,13 +197,16 @@ private Component Menu() {
 		jpPrincipal.add(feci2);
 		jpPrincipal.add(fecf);
 		jpPrincipal.add(fecf2);
+		jpPrincipal.setBackground(Color.YELLOW);
 		return jpPrincipal;
 	}
 	public JPanel panelEsteAbajo(){
-		JPanel jpPrincipal = new JPanel(new GridLayout(16, 1));
+		JPanel jpPrincipal = new JPanel(new GridBagLayout());
 		jpPrincipal.setLayout(new BoxLayout(jpPrincipal, BoxLayout.Y_AXIS));
 		ver = new JButton("Ver");
 		ver.addActionListener(new GestorVer());
+
+//		ver.setBounds(10, 10, 10, 10);
 		jpPrincipal.add(ver);
 		
 		mod= new JButton("Modificar");
@@ -218,7 +215,7 @@ private Component Menu() {
 		jpPrincipal.add(mod);
 		
 		ins = new JButton("Insertar");
-		ins.addActionListener(new GestorVer());
+		ins.addActionListener(new GestorIns());
 		ins.setEnabled(false);
 		jpPrincipal.add(ins);
 		
@@ -230,7 +227,7 @@ private Component Menu() {
 		chBox = new JCheckBox("Editar/Insertar");
 		chBox.addActionListener(new GestorEdit());
 		jpPrincipal.add(chBox);
-		
+		jpPrincipal.setBackground(Color.green);
 		 return jpPrincipal;
 	}
 	
@@ -250,11 +247,13 @@ private Component Menu() {
 		jpScroll = new JScrollPane(jpTable);
 		JPanel jpPrincipal = new JPanel();
 		jpPrincipal.add(jpScroll);
-		// jpScroll.setPreferredSize(new Dimension(1000,750));
-		jpTable.setPreferredScrollableViewportSize(new Dimension(1000, 400));
+		
+		jpTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		 jpScroll.setPreferredSize(new Dimension(1000,750));
+		jpTable.setPreferredScrollableViewportSize(new Dimension(700, 700));
 		jpTable.setFillsViewportHeight(true);
 		//Create the scroll pane and add the table to it.
-		
+		jpPrincipal.setBackground(Color.red);
 		 return jpPrincipal;
 	}
 	
@@ -262,14 +261,16 @@ private Component Menu() {
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		EmpleadoController empCon = new EmpleadoController();
 		//Create and set up the window.
-		frame = new JFrame("TablaEmpleados");
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.setIconImage(new ImageIcon("/apple.png").getImage());
+		
 
+		frame.setIconImage(new ImageIcon("imagen.jpeg").getImage()); 
      
-     
-		empCon.setOpaque(true); //content panes must be opaque
+//		empCon.setOpaque(true); //content panes must be opaque
      	frame.setContentPane(empCon);
-     	frame.setSize(dim.width,dim.height);
+     	frame.setSize(dim.width,dim.height-40);
 
      //Display the window.
      //frame.pack();
@@ -399,6 +400,7 @@ private Component Menu() {
 		
 	}
 	public class GestorMod implements ActionListener{
+		private Object fila[] = new Object[8];
 		public void actionPerformed(ActionEvent e){
 			try {
 				ConexionBBDD conDB = new ConexionBBDD();
@@ -410,10 +412,20 @@ private Component Menu() {
 					emp.setDepartamento((String) list.getSelectedItem());
 					emp.setEmail(email2.getText());
 					emp.setSalario(Float.parseFloat(sal2.getText()));
-//					emp.setFechaIni(Timestamp.valueOf(feci2.getText()));
-//					emp.setFechaFin(Timestamp.valueOf(fecf2.getText()));
+					emp.setFechaIni(Timestamp.valueOf(feci2.getText()));
+					emp.setFechaFin(Timestamp.valueOf(fecf2.getText()));
 						
 					conDB.update(emp);
+					dt.removeRow(jpTable.getSelectedRow());
+					fila[0] = emp.getID();
+					fila[1] = emp.getNombre();
+					fila[2] = emp.getApellido();
+					fila[3] = emp.getEmail();
+					fila[4] = emp.getDepartamento();
+					fila[5] = emp.getSalario();
+					fila[6] = emp.getFechaIni();
+					fila[7] = emp.getFechaFin();
+					dt.addRow(fila);
 				}
 			} catch (SQLException e1) {
 				e1.printStackTrace();
@@ -453,6 +465,7 @@ private Component Menu() {
 		
 	}
 	public class GestorIns implements ActionListener{
+		private Object fila[] = new Object[8];
 		public void actionPerformed(ActionEvent e){
 			try{
 				ConexionBBDD conDB = new ConexionBBDD();
@@ -463,12 +476,21 @@ private Component Menu() {
 					emp.setDepartamento(list.getName());
 					emp.setEmail(email2.getText());
 					emp.setSalario(Float.parseFloat(sal2.getText()));
-//						emp.setFechaIni(Timestamp.valueOf(feci2.getText()));
+						emp.setFechaIni(Timestamp.valueOf(feci2.getText()));
 //						emp.setFechaFin(Timestamp.valueOf(fecf2.getText()));
 					conDB.insert(emp);
-					nombr2.setToolTipText("");
+					nombr2.setText("");
+					
+					fila[0] = emp.getID();
+					fila[1] = emp.getNombre();
+					fila[2] = emp.getApellido();
+					fila[3] = emp.getEmail();
+					fila[4] = emp.getDepartamento();
+					fila[5] = emp.getSalario();
+					fila[6] = emp.getFechaIni();
+					fila[7] = emp.getFechaFin();
+					dt.addRow(fila);
 				}
-
 			}catch(SQLException ex){
 				ex.printStackTrace();
 			}
@@ -489,15 +511,12 @@ private Component Menu() {
 				myPanel.add(emailfield);
 				int result = JOptionPane.showConfirmDialog(null, myPanel, "filtro", JOptionPane.OK_CANCEL_OPTION);
 				
-//				String email = JOptionPane.showInputDialog(null, "E-Mail");
-				
-				
 				if(result == JOptionPane.OK_OPTION){
 					listaEmp = conDB.selectFiltrado("email",emailfield.getText());
 					while(dt.getRowCount()>0){
 						dt.removeRow(0);
 					}
-					if(listaEmp == null){
+					if(listaEmp.isEmpty()){
 						JOptionPane.showMessageDialog(null, "No se han encontrado registros para esta busqueda");
 					}else{
 						for(Empleado em:listaEmp){
@@ -540,7 +559,7 @@ private Component Menu() {
 					while(dt.getRowCount()>0){
 						dt.removeRow(0);
 					}
-					if(listaEmp == null){
+					if(listaEmp.isEmpty()){
 						JOptionPane.showMessageDialog(null, "No se han encontrado registros para esta busqueda");
 					}else{
 						for(Empleado em:listaEmp){
@@ -583,7 +602,7 @@ private Component Menu() {
 					while(dt.getRowCount()>0){
 						dt.removeRow(0);
 					}
-					if(listaEmp == null){
+					if(listaEmp.isEmpty()){
 						JOptionPane.showMessageDialog(null, "No se han encontrado registros para esta busqueda");
 					}else{
 						for(Empleado em:listaEmp){
